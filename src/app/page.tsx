@@ -23,7 +23,13 @@ export default function HomePage() {
     <main>
       {/* ─── NAV ─── */}
       <nav className="site-nav">
-        <span className="nav-wordmark">BUILDCRAFT</span>
+        <span className="nav-wordmark" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20">
+            <rect width="32" height="32" fill="#C4553A" rx="4"/>
+            <text x="8" y="24" fontFamily="Georgia, serif" fontSize="24" fontWeight="bold" fill="#F8F7F4">b</text>
+          </svg>
+          BUILDCRAFT
+        </span>
         <span className="nav-issue">Issue 001</span>
       </nav>
 

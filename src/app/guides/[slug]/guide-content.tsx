@@ -4,6 +4,13 @@ import Link from "next/link";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import type { Guide } from "@/lib/types";
+import {
+  EasingVisualizer,
+  SpringPlayground,
+  TimingDemo,
+  EntranceExitDemo,
+  StaggerDemo,
+} from "@/components/demos/animation-demos";
 
 /* ─── Guide content data ─── */
 
@@ -3171,7 +3178,11 @@ export default function GuideContent({
     <main>
       {/* ─── NAV ─── */}
       <nav className="site-nav">
-        <Link href="/" className="nav-wordmark">
+        <Link href="/" className="nav-wordmark" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20">
+            <rect width="32" height="32" fill="#C4553A" rx="4"/>
+            <text x="8" y="24" fontFamily="Georgia, serif" fontSize="24" fontWeight="bold" fill="#F8F7F4">b</text>
+          </svg>
           BUILDCRAFT
         </Link>
         <span className="nav-issue">Issue 001</span>
@@ -3248,6 +3259,22 @@ export default function GuideContent({
             >
               <h2 className="section-heading">{section.title}</h2>
               <div className="section-body">{section.content}</div>
+              {/* Interactive demos for interactivity-animation guide */}
+              {guide.slug === "interactivity-animation" && section.id === "animation-principles" && (
+                <>
+                  <TimingDemo />
+                  <EasingVisualizer />
+                </>
+              )}
+              {guide.slug === "interactivity-animation" && section.id === "micro-interactions" && (
+                <SpringPlayground />
+              )}
+              {guide.slug === "interactivity-animation" && section.id === "scroll-animations" && (
+                <>
+                  <EntranceExitDemo />
+                  <StaggerDemo />
+                </>
+              )}
             </motion.section>
           ))}
 
