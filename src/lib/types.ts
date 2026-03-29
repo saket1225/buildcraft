@@ -16,4 +16,7 @@ export const guides: Guide[] = [
   { slug: 'performance', number: '06', title: 'Performance', description: 'Image optimization, lazy loading, font loading strategies, and performance budgets.', readTime: '9 min', difficulty: 'Intermediate' },
   { slug: 'architecture', number: '07', title: 'Architecture', description: 'File structure, knowing when to stop, component boundaries, and managing complexity.', readTime: '14 min', difficulty: 'Advanced' },
   { slug: 'testing', number: '08', title: 'Testing', description: 'What to test, how to test, meaningful coverage, and expect.dev integration.', readTime: '10 min', difficulty: 'Intermediate' },
+  { slug: 'interactivity-animation', number: '09', title: 'Interactivity & Animation', description: 'The 12 principles of animation applied to UI. Micro-interactions, scroll patterns, and motion that serves purpose.', readTime: '16 min', difficulty: 'Advanced' },
+  { slug: 'ux-laws', number: '10', title: 'UX Laws & Principles', description: 'The psychological principles behind every good interface. Fitts\'s Law, Hick\'s Law, and the myths debunked.', readTime: '18 min', difficulty: 'Intermediate' },
+  { slug: 'silicon-friendly', number: '11', title: 'Silicon-Friendly Design', description: 'Making your product work for AI agents. Semantic HTML to autonomous operation.', readTime: '14 min', difficulty: 'Advanced' },
 ]

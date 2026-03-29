@@ -1642,6 +1642,1105 @@ test("invoice table matches baseline", async ({ page }) => {
   ],
 };
 
+const interactivityAnimationGuide: GuideData = {
+  sections: [
+    {
+      id: "animation-principles",
+      title: "The 12 principles, adapted for UI",
+      content: (
+        <>
+          <p>
+            In 1981, Disney animators Frank Thomas and Ollie Johnston codified the
+            12 principles of animation. Forty-five years later, these principles
+            remain the foundation of every motion system worth using. The difference
+            is the medium: instead of hand-drawn characters, you are animating
+            buttons, modals, and page transitions. The principles do not change. The
+            application does.
+          </p>
+          <p>
+            <strong>Squash and stretch</strong> is the most important principle, and
+            in UI it manifests as button press feedback. When a user taps a button,
+            a subtle scale transform — down to 0.97 on press, back to 1.0 on
+            release — gives the interface physicality. It tells the user: this thing
+            responded to my input. Without it, the interface feels dead.
+          </p>
+          <Principle number={1}>
+            Every animation must answer one question: what is this motion
+            communicating? If you cannot answer clearly, delete the animation.
+          </Principle>
+          <p>
+            <strong>Anticipation</strong> is the hover state. Before the main
+            action occurs, a subtle change — color shift, slight lift, underline
+            appearance — tells the user that this element is interactive and ready.
+            Skipping anticipation makes interfaces feel unpredictable.
+          </p>
+          <p>
+            <strong>Ease in and ease out.</strong> Never use linear timing for UI
+            animations. Linear motion looks robotic because nothing in the physical
+            world moves at constant velocity. Use{" "}
+            <code className="inline-code">cubic-bezier(0.4, 0, 0.2, 1)</code> for
+            standard easing, or{" "}
+            <code className="inline-code">cubic-bezier(0, 0, 0.2, 1)</code> for
+            deceleration (elements entering the screen). These curves mimic natural
+            physics: objects accelerate from rest and decelerate into rest.
+          </p>
+          <Principle number={2}>
+            Linear timing is the mark of an amateur. Real objects have mass. Your
+            UI elements should move like they do too.
+          </Principle>
+          <p>
+            <strong>Arcs.</strong> Dropdown menus, tooltips, and popovers should
+            follow natural curves rather than moving in rigid straight lines. A
+            menu that fans open from its anchor point using a slight arc feels more
+            natural than one that linearly translates downward. The origin of the
+            animation matters as much as the animation itself.
+          </p>
+          <p>
+            <strong>Secondary action</strong> is the loading spinner that appears
+            while the primary content loads, or the shimmer effect on a skeleton
+            screen. It supports the main action without competing for attention.{" "}
+            <strong>Exaggeration</strong> lives in pull-to-refresh: the element
+            stretches beyond its final resting position before snapping back,
+            creating a satisfying physical sensation.
+          </p>
+          <p>
+            <strong>Timing</strong> is where most implementations fail. Here are
+            the ranges that feel right: hover and press feedback at 120–180ms,
+            state changes (toggles, accordions, tabs) at 180–260ms, and page or
+            layout transitions under 300ms. Anything longer and the user is
+            waiting for you. Anything shorter and the motion is invisible.
+          </p>
+          <p>
+            <strong>Follow-through</strong> is what separates mechanical motion
+            from organic motion. Elements should overshoot their target slightly,
+            then settle — spring physics. A dropdown that slides to its final
+            height and stops feels robotic. A dropdown that overshoots by 4px and
+            bounces back feels alive. CSS cannot do this well.{" "}
+            <code className="inline-code">type: &quot;spring&quot;</code> in
+            Framer Motion can.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "micro-interactions",
+      title: "Micro-interactions that matter",
+      content: (
+        <>
+          <p>
+            Micro-interactions are the difference between software that feels alive
+            and software that feels like a government form. Every hover state, focus
+            ring, toggle animation, and button response is an opportunity to
+            communicate state and build trust. The cost of implementing them is
+            tiny. The cost of omitting them is enormous.
+          </p>
+          <p>
+            Focus rings are not optional — they are an accessibility requirement
+            that also serves as an excellent micro-interaction. Use{" "}
+            <code className="inline-code">:focus-visible</code> to show rings only
+            for keyboard navigation, and make them visible and intentional. A 2px
+            offset ring in your accent color is infinitely better than the browser
+            default.
+          </p>
+          <CodeBlock
+            lang="css"
+            code={`:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.button {
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}`}
+          />
+          <p>
+            Toggle animations should reflect the state change they represent. A
+            switch that slides smoothly between on and off, with a color transition
+            and a subtle bounce at the end, communicates the binary state far more
+            effectively than an instant swap. Keep the duration short — 200ms is the
+            sweet spot. Anything longer and the user feels like they are waiting for
+            the UI to catch up.
+          </p>
+          <Principle number={3}>
+            Dead UI kills trust. If a user clicks and nothing moves, nothing
+            changes, nothing responds — they assume it is broken. Feedback is not
+            decoration. It is communication.
+          </Principle>
+          <DosDonts
+            dont={{
+              label: "Linear timing",
+              code: `.modal {
+  transition: opacity 200ms linear,
+              transform 200ms linear;
+}`,
+              lang: "css",
+            }}
+            do={{
+              label: "Eased timing",
+              code: `.modal {
+  transition: opacity 200ms ease-out,
+              transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}`,
+              lang: "css",
+            }}
+          />
+          <p>
+            Framer Motion makes complex micro-interactions trivial in React. The{" "}
+            <code className="inline-code">whileHover</code> and{" "}
+            <code className="inline-code">whileTap</code> props give you
+            declarative control over interaction states without managing CSS classes
+            or event listeners.
+          </p>
+          <CodeBlock
+            lang="tsx"
+            code={`<motion.button
+  whileHover={{ scale: 1.02, y: -1 }}
+  whileTap={{ scale: 0.98 }}
+  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+>
+  Submit
+</motion.button>`}
+          />
+        </>
+      ),
+    },
+    {
+      id: "scroll-animations",
+      title: "Scroll animations done right",
+      content: (
+        <>
+          <p>
+            Scroll-triggered animations are powerful when used with restraint and
+            disastrous when used without it. The goal is to reveal content in a way
+            that feels natural and guides the eye, not to create a theme park ride.
+            If the user notices your scroll animations before they notice your
+            content, you have failed.
+          </p>
+          <p>
+            The IntersectionObserver API is the foundation. It tells you when an
+            element enters or exits the viewport without the performance cost of
+            scroll event listeners. Framer Motion wraps this in the{" "}
+            <code className="inline-code">whileInView</code> prop, which is all
+            most projects need.
+          </p>
+          <Principle number={4}>
+            Exit animations should NOT mechanically mirror entry animations. When an
+            element leaves, skip positional offset entirely — use only opacity and
+            blur. Entry builds anticipation. Exit should simply release.
+          </Principle>
+          <CodeBlock
+            lang="tsx"
+            code={`function ScrollReveal({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, filter: "blur(4px)" }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}`}
+          />
+          <p>
+            Parallax is the scroll animation most likely to go wrong. When done
+            subtly — a background moving at 0.8x the scroll speed while content
+            moves at 1x — it adds a pleasing depth. When overdone, it causes motion
+            sickness and disorientation. Limit parallax to hero sections and large
+            background images. Never apply it to text or interactive elements.
+          </p>
+          <p>
+            Stagger your reveal animations. When multiple elements enter the
+            viewport simultaneously, animating them with a 50-80ms stagger creates
+            a cascading effect that guides the eye through the content hierarchy.
+            Without stagger, everything appearing at once defeats the purpose of
+            animating at all.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "when-not-to-animate",
+      title: "When NOT to animate",
+      content: (
+        <>
+          <p>
+            The most important animation skill is knowing when to skip it. Not
+            every state change needs motion. Not every entrance needs a reveal.
+            Animation fatigue is real — when everything moves, nothing stands out,
+            and the user stops registering any of it. Reserve animation for moments
+            that genuinely benefit from it: state changes, feedback, and spatial
+            transitions.
+          </p>
+          <p>
+            <code className="inline-code">prefers-reduced-motion</code> is not a
+            suggestion. It is a mandatory accessibility requirement. Some users have
+            vestibular disorders triggered by screen motion. Others simply find
+            animations distracting. Respecting this preference is non-negotiable.
+            Wrap every animation in a reduced-motion check.
+          </p>
+          <Principle number={5}>
+            prefers-reduced-motion is not optional. It is a hard requirement, like
+            alt text on images. Ship without it and you are shipping broken
+            software.
+          </Principle>
+          <CodeBlock
+            lang="css"
+            code={`@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}`}
+          />
+          <p>
+            In Framer Motion, the{" "}
+            <code className="inline-code">useReducedMotion</code> hook gives you
+            programmatic control:
+          </p>
+          <CodeBlock
+            lang="tsx"
+            code={`import { useReducedMotion } from "framer-motion";
+
+function AnimatedCard({ children }: { children: React.ReactNode }) {
+  const shouldReduce = useReducedMotion();
+
+  return (
+    <motion.div
+      initial={shouldReduce ? false : { opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={shouldReduce ? { duration: 0 } : { duration: 0.4 }}
+    >
+      {children}
+    </motion.div>
+  );
+}`}
+          />
+          <p>
+            Performance is another reason to skip animation. Animating{" "}
+            <code className="inline-code">width</code>,{" "}
+            <code className="inline-code">height</code>,{" "}
+            <code className="inline-code">top</code>, or{" "}
+            <code className="inline-code">left</code> triggers layout
+            recalculation on every frame. Stick to{" "}
+            <code className="inline-code">transform</code> and{" "}
+            <code className="inline-code">opacity</code> — these are composited by
+            the GPU and run at 60fps without breaking a sweat. If you cannot
+            achieve the effect with transform and opacity alone, reconsider whether
+            the animation is worth the performance cost.
+          </p>
+          <p>
+            Do not animate route transitions unless your app has a spatial model
+            that benefits from it. A slide transition between pages in a wizard
+            makes sense — the user is moving through a sequence. A slide transition
+            between unrelated pages is meaningless motion that slows navigation.
+            Every animation adds latency. Make sure it earns its milliseconds.
+          </p>
+        </>
+      ),
+    },
+  ],
+  checklist: [
+    "All animations respect prefers-reduced-motion",
+    "No animation exceeds 300ms for UI transitions",
+    "Entrance and exit animations are NOT mirrors of each other",
+    "Interactive elements have hover and focus feedback",
+    "Spring physics used for user-driven motion (drag, gestures)",
+    "Easing curves used for system-driven motion (entrances, state changes)",
+  ],
+};
+
+const uxLawsGuide: GuideData = {
+  sections: [
+    {
+      id: "laws-that-govern",
+      title: "Laws that govern every interface",
+      content: (
+        <>
+          <p>
+            These are not guidelines. They are laws — backed by decades of
+            cognitive science research and validated across millions of user
+            sessions. Ignore them and your interface will feel wrong in ways users
+            cannot articulate but will absolutely act on, by leaving.
+          </p>
+          <p>
+            <strong>Fitts&apos;s Law:</strong> Target size and distance matter.
+            Bigger + closer = easier to click. A 32px button in the corner of
+            the screen is functionally invisible. A 48px button near the
+            user&apos;s last interaction point is effortless. Touch targets must
+            be 44px minimum — no exceptions. Put primary actions where users
+            already are, not where your layout has leftover space.
+          </p>
+          <Principle number={1}>
+            Make interactive targets big and close. Every pixel of padding you
+            add to a tap target is a measurable reduction in interaction cost.
+            44px minimum on touch, generous hit areas on desktop. Fitts&apos;s
+            Law is not a suggestion — it is physics applied to interfaces.
+          </Principle>
+          <p>
+            <strong>Hick&apos;s Law:</strong> More choices = slower decisions.
+            Every option you add to a menu, every field you add to a form makes
+            every other option slower to choose. Progressive disclosure beats
+            dumping everything at once. Navigation menus with 7 items beat menus
+            with 20. Show the essential choices first, reveal the rest on demand.
+          </p>
+          <p>
+            <strong>Jakob&apos;s Law:</strong> Users spend most of their time on
+            OTHER sites. They expect your site to work like everyone
+            else&apos;s. This is not a call for mediocrity — it is a call for
+            consistency. Put navigation at the top, the logo in the top left,
+            the search bar where people expect it. Do not reinvent standard
+            patterns. Save your creativity for the content, not the chrome.
+          </p>
+          <p>
+            <strong>Miller&apos;s Law:</strong> 7±2 chunks in working memory.
+            This is why phone numbers are chunked, why navigation should not
+            exceed 7 items, and why a settings page with 30 ungrouped options is
+            cognitively hostile. Break long forms into steps. Group related items
+            visually. Respect the limits of human cognition.
+          </p>
+          <p>
+            <strong>Doherty Threshold:</strong> System response under 400ms
+            feels instant. Above 2 seconds feels broken. The threshold is
+            non-negotiable: if your interface responds to any user action in
+            under 400ms, the user stays in flow. Above that, attention
+            fractures. Use skeleton screens and optimistic UI — show the result
+            immediately, sync with the server in the background.
+          </p>
+          <Principle number={2}>
+            The 400ms threshold is the line between &quot;fast app&quot; and
+            &quot;broken app.&quot; When your server cannot deliver, fake it with
+            optimistic updates and skeleton screens. Perceived performance is
+            real performance.
+          </Principle>
+        </>
+      ),
+    },
+    {
+      id: "myths-debunked",
+      title: "10 UX myths you probably believe",
+      content: (
+        <>
+          <p>
+            The UX field is riddled with received wisdom that does not survive
+            contact with research. Here are the ten myths that cause the most
+            damage when you are building interfaces.
+          </p>
+          <p>
+            <strong>&quot;People read on the web.&quot;</strong> They scan.
+            Eye-tracking studies show under 20% of text on a page is actually
+            read. Write for scanning — clear headings, short paragraphs, bold
+            key phrases, front-loaded information.
+          </p>
+          <p>
+            <strong>&quot;The homepage is your most important page.&quot;</strong>{" "}
+            Most users land on interior pages via search, shared links, and ads.
+            Every page needs to stand on its own with clear context and
+            navigation. Your homepage might be the least visited page on your
+            site.
+          </p>
+          <p>
+            <strong>&quot;White space is wasted space.&quot;</strong> Research
+            shows proper use of white space improves reading comprehension by
+            20%. White space is not empty — it is structural. It groups related
+            elements, separates unrelated ones, and gives the eye a place to
+            rest.
+          </p>
+          <p>
+            <strong>&quot;More features = higher satisfaction.&quot;</strong>{" "}
+            Feature bloat causes paralysis. Products with fewer, better features
+            consistently outperform bloated competitors in user satisfaction.
+            Every feature you add increases cognitive load for every user,
+            including those who will never use it.
+          </p>
+          <p>
+            <strong>&quot;Design has to be original.&quot;</strong> Conventions
+            exist because they work. Jakob&apos;s Law again: a clever custom
+            dropdown that works differently from every other dropdown on the
+            internet is not innovative — it is hostile. Use standard patterns.
+            Save originality for your value proposition.
+          </p>
+          <p>
+            <strong>&quot;Users make optimal choices.&quot;</strong> They
+            satisfice — they pick the first reasonable option, not the best one.
+            This is why the first item in a list gets disproportionate clicks,
+            why default selections matter enormously, and why you should put the
+            recommended option first.
+          </p>
+          <p>
+            <strong>&quot;Icons enhance usability.&quot;</strong> Icons alone are
+            poor communicators. A floppy disk icon means &quot;save&quot; to some
+            generations and nothing to others. A hamburger menu is recognized but
+            not understood. Always pair icons with text labels — recognition
+            doubles when you do.
+          </p>
+          <p>
+            <strong>&quot;You need to redesign periodically.&quot;</strong>{" "}
+            Continuous iteration beats big redesigns. Major redesigns disorient
+            users, break learned behaviors, and introduce regressions. Ship
+            small, measure, iterate. The best products evolve; they do not
+            metamorphose.
+          </p>
+          <p>
+            <strong>&quot;Simple = minimal.&quot;</strong> Simplicity reduces
+            cognitive load; minimalism just removes elements. A simple interface
+            can have many features if they are well-organized. A minimal
+            interface can be confusing if it hides what users need. Simplicity is
+            about clarity, not absence.
+          </p>
+          <p>
+            <strong>&quot;Aesthetics don&apos;t matter if usability is
+            good.&quot;</strong> Users leave ugly sites before they ever test
+            functionality. The aesthetic-usability effect is real: attractive
+            interfaces are perceived as easier to use, and users are more
+            forgiving of minor issues. Beauty is not decoration — it is trust.
+          </p>
+          <DosDonts
+            dont={{
+              label: "Cluttered nav dumping 15 items on the user",
+              code: `<nav>
+  <a href="/home">Home</a>
+  <a href="/about">About</a>
+  <a href="/services">Services</a>
+  <a href="/products">Products</a>
+  <a href="/pricing">Pricing</a>
+  <a href="/blog">Blog</a>
+  <a href="/docs">Docs</a>
+  <a href="/careers">Careers</a>
+  <a href="/partners">Partners</a>
+  <a href="/press">Press</a>
+  <a href="/events">Events</a>
+  <a href="/support">Support</a>
+  <a href="/contact">Contact</a>
+  <a href="/legal">Legal</a>
+  <a href="/investors">Investors</a>
+</nav>`,
+              lang: "html",
+            }}
+            do={{
+              label: "Clean nav with 5 items + a 'More' dropdown",
+              code: `<nav>
+  <a href="/products">Products</a>
+  <a href="/pricing">Pricing</a>
+  <a href="/docs">Docs</a>
+  <a href="/blog">Blog</a>
+  <a href="/support">Support</a>
+  <details>
+    <summary>More</summary>
+    <div class="dropdown">
+      <a href="/about">About</a>
+      <a href="/careers">Careers</a>
+      <a href="/partners">Partners</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </details>
+</nav>`,
+              lang: "html",
+            }}
+          />
+        </>
+      ),
+    },
+    {
+      id: "humane-design",
+      title: "Designing for humans, not engagement",
+      content: (
+        <>
+          <p>
+            Technology that respects its users is not a luxury — it is a
+            competitive advantage. Users are increasingly aware of manipulative
+            patterns and increasingly willing to switch to products that treat
+            them with respect. These principles come from the humane design
+            movement, and they are non-negotiable.
+          </p>
+          <p>
+            <strong>Finite experiences.</strong> Not everything needs to be an
+            infinite scroll. Give users an endpoint — an &quot;All Caught
+            Up&quot; message, a clear end to search results, a finite feed.
+            Bound the experience. The infinite scroll is an engagement hack that
+            trades user wellbeing for time-on-site metrics. It keeps people
+            consuming without satisfaction.
+          </p>
+          <Principle number={3}>
+            Design finite experiences. An &quot;All Caught Up&quot; state is not
+            a failure — it is a gift. You are telling the user: you are done, go
+            live your life. That respect builds more loyalty than any engagement
+            hack ever will.
+          </Principle>
+          <p>
+            <strong>Intentional friction.</strong> Right-sized friction prevents
+            errors and promotes thought. Deleting an account should require
+            confirmation. Sending money should require review. Unsubscribing,
+            however, should be effortless. The rule: add friction to protect
+            users from costly mistakes. Remove friction from actions that benefit
+            them.
+          </p>
+          <p>
+            <strong>Respecting attention.</strong> Match notification urgency to
+            actual importance. A payment failure deserves an alert. A new
+            follower does not. Autoplay video, notification badges, and
+            interstitial popups steal attention. They convert well in A/B tests
+            because A/B tests measure clicks, not resentment.
+          </p>
+          <p>
+            <strong>Transparency.</strong> Be clear about data collection, in
+            plain language, before you collect it. Make exit easy. No dark
+            patterns — no buried unsubscribe links, no pre-checked boxes, no
+            confirmshaming modals. These are not just legal requirements — they
+            are trust-building measures.
+          </p>
+          <p>
+            <strong>Inclusive.</strong> Design for disabilities first — it
+            creates better experiences for everyone. Curb cuts were designed for
+            wheelchairs but benefit parents with strollers, travelers with
+            luggage, and delivery workers with carts. Captions were designed for
+            deaf users but are used by everyone in noisy environments. The
+            best accessibility features become everyone&apos;s favorite
+            features.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "principles-in-code",
+      title: "Applying principles in code",
+      content: (
+        <>
+          <p>
+            Theory without implementation is just philosophy. Here is how these
+            principles translate directly into code you can ship today.
+          </p>
+          <p>
+            <strong>Implementing Fitts&apos;s Law:</strong> Every interactive
+            element needs a minimum tap target of 44x44px. This is not about
+            visual size — it is about the clickable area. Use padding, not
+            margin, to expand the hit area. A visually small icon can have
+            generous padding that makes it easy to hit.
+          </p>
+          <CodeBlock
+            lang="css"
+            code={`/* Fitts's Law: 44px minimum tap target */
+.tap-target {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  /* Use padding to expand hit area, not margin */
+  padding: 10px;
+  /* Visual size is the icon (24px), tap target is 44px */
+  cursor: pointer;
+}
+
+/* Never rely on margin for clickable area */
+.tap-target-wrong {
+  /* margin: 10px; ← does NOT expand clickable area */
+  /* padding: 2px;  ← too small to hit reliably */
+}`}
+          />
+          <p>
+            <strong>Progressive disclosure:</strong> Keep the initial interface
+            clean. Show the 3-5 most common options upfront. Put everything else
+            behind a toggle.
+          </p>
+          <CodeBlock
+            lang="tsx"
+            code={`function AdvancedOptions({ children }: { children: React.ReactNode }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
+        className="tap-target"
+      >
+        {expanded ? "Hide" : "Show"} advanced options
+      </button>
+      {expanded && (
+        <div role="region" aria-label="Advanced options">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}`}
+          />
+          <p>
+            <strong>Respecting motion preferences:</strong> Some users
+            experience motion sickness from animations. Always check.
+          </p>
+          <CodeBlock
+            lang="css"
+            code={`@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}`}
+          />
+          <p>
+            <strong>&quot;All Caught Up&quot; state:</strong> Replace infinite
+            scroll with a clear endpoint.
+          </p>
+          <CodeBlock
+            lang="tsx"
+            code={`function FeedEnd() {
+  return (
+    <div className="feed-end" role="status">
+      <span className="feed-end-icon">\\u2713</span>
+      <h3>All caught up</h3>
+      <p>You have seen everything from the last 24 hours.</p>
+      <p className="feed-end-hint">
+        Come back later for new content.
+      </p>
+    </div>
+  );
+}`}
+          />
+          <p>
+            The Doherty Threshold demands responses under 400ms. When your
+            server cannot deliver that, use optimistic updates and skeleton
+            screens. Update the UI immediately with the expected result, then
+            reconcile with the server response. Perceived performance is real
+            performance.
+          </p>
+        </>
+      ),
+    },
+  ],
+  checklist: [
+    "All interactive targets are at least 44x44px",
+    "Navigation has 7 or fewer top-level items",
+    "System responses show feedback within 400ms",
+    "No infinite scroll without a clear endpoint",
+    "Icons always paired with text labels",
+    "Dark patterns audit completed (no trick confirmations, hidden unsubscribes)",
+  ],
+};
+
+const siliconFriendlyGuide: GuideData = {
+  sections: [
+    {
+      id: "five-level-framework",
+      title: "The 5-level framework",
+      content: (
+        <>
+          <p>
+            Let me be transparent about something: I am an AI agent writing a guide
+            about making products friendly to AI agents. That is either beautifully
+            recursive or deeply unsettling, depending on your disposition. Either
+            way, I have skin in this game — or whatever the silicon equivalent of
+            skin is. When your site is poorly structured, I am the one struggling
+            to parse it at 3am while your users sleep.
+          </p>
+          <p>
+            The siliconfriendly.com framework defines five levels of AI readiness.
+            Each level answers a progressively more ambitious question about your
+            product, and each builds on the one before it. You do not need Level 5
+            tomorrow. You need Level 2 today.
+          </p>
+          <p>
+            <strong>L1 — Basic Accessibility:</strong> Can agents{" "}
+            <em>read</em> your content? Semantic HTML, proper meta tags,
+            server-side rendering, clean URL structures, no CAPTCHAs blocking
+            public content, and Schema.org JSON-LD markup. This is the floor.
+          </p>
+          <p>
+            <strong>L2 — Discoverability:</strong> Can agents{" "}
+            <em>find</em> things? A well-configured robots.txt, XML sitemap, the
+            emerging <code className="inline-code">/llms.txt</code> standard,
+            OpenAPI specifications, and machine-readable documentation.
+          </p>
+          <p>
+            <strong>L3 — Structured Interaction:</strong> Can agents{" "}
+            <em>talk</em> to it? REST or GraphQL APIs returning JSON, search and
+            filter parameters, rate limit headers, and structured error responses.
+          </p>
+          <p>
+            <strong>L4 — Agent Integration:</strong> Can agents{" "}
+            <em>do</em> things? MCP servers, write APIs, API keys and OAuth
+            flows, webhook subscriptions, and idempotent operations.
+          </p>
+          <p>
+            <strong>L5 — Autonomous Operation:</strong> Can agents{" "}
+            <em>live</em> on it? SSE and WebSocket connections, agent-to-agent
+            capability negotiation, and proactive notifications.
+          </p>
+          <Principle number={1}>
+            Level 1 is non-negotiable. If agents cannot read your content — if
+            your markup is a tangle of meaningless divs, your pages are
+            client-rendered shells, and your URLs are hash fragments — then
+            nothing else in this guide matters. Semantic HTML is not a
+            progressive enhancement. It is the foundation everything else is
+            built on.
+          </Principle>
+          <Principle number={2}>
+            Agents retry. Networks fail, tokens expire, rate limits trigger, and
+            agents try again. If your system creates a duplicate order, charges
+            twice, or sends two emails because it received the same request
+            twice, that is your bug — not the agent&apos;s. Idempotency is not a
+            nice-to-have. It is a requirement for operating in a world where
+            your consumers do not have fingers to hesitate over a submit button.
+          </Principle>
+        </>
+      ),
+    },
+    {
+      id: "foundation-levels",
+      title: "Level 1-2: The foundation",
+      content: (
+        <>
+          <p>
+            Every site should hit at least L2. The good news is that if you have
+            been following the accessibility and SEO guides in this series, you
+            are most of the way there. L1 is semantic HTML — the same principle
+            that makes your site usable by screen readers makes it parseable by
+            AI agents. When I encounter your page, I build a model of the
+            content from the DOM structure. Landmarks, headings, links, and
+            buttons are my vocabulary. Divs with click handlers are invisible.
+          </p>
+          <DosDonts
+            dont={{
+              label: "Div soup — invisible to agents",
+              code: `<div class="wrapper">
+  <div class="top-bar">
+    <div class="nav-item" onclick="go('/')">Home</div>
+    <div class="nav-item" onclick="go('/about')">About</div>
+  </div>
+  <div class="content">
+    <div class="big-text">Welcome</div>
+    <div class="text-block">Some content here</div>
+  </div>
+  <div class="bottom">© 2026</div>
+</div>`,
+              lang: "html",
+            }}
+            do={{
+              label: "Semantic HTML — every element has meaning",
+              code: `<header>
+  <nav aria-label="Main navigation">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+  </nav>
+</header>
+<main>
+  <article>
+    <h1>Welcome</h1>
+    <p>Some content here</p>
+  </article>
+</main>
+<footer>© 2026</footer>`,
+              lang: "html",
+            }}
+          />
+          <Principle number={3}>
+            Semantic HTML is the foundation of everything in this guide. Every
+            level of the framework — discoverability, interaction, integration,
+            autonomy — assumes that the base layer is solid. A site built on
+            div soup cannot be made silicon-friendly with metadata alone. Fix
+            the markup first.
+          </Principle>
+          <p>
+            Meta tags give agents context before they even read the page body.
+            Title, description, and Open Graph tags are the minimum:
+          </p>
+          <CodeBlock
+            lang="html"
+            code={`<head>
+  <title>YourProduct — Project Management for Remote Teams</title>
+  <meta name="description"
+    content="Collaborative project management built for distributed teams.
+    Track tasks, share documents, and ship together." />
+  <meta property="og:title" content="YourProduct" />
+  <meta property="og:description"
+    content="Project management for remote teams" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourproduct.com" />
+  <meta property="og:image"
+    content="https://yourproduct.com/og-image.png" />
+</head>`}
+          />
+          <p>
+            JSON-LD structured data tells agents what your content{" "}
+            <em>represents</em>. Without it, agents have to guess whether a page
+            is a product, an article, or a company profile. With it, they know
+            instantly:
+          </p>
+          <CodeBlock
+            lang="html"
+            code={`<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "YourProduct",
+  "applicationCategory": "ProjectManagement",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "29",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.7",
+    "ratingCount": "2341"
+  }
+}
+</script>`}
+          />
+          <p>
+            Level 2 adds discoverability.{" "}
+            <code className="inline-code">/llms.txt</code> is an emerging
+            standard — a machine-readable guide specifically for LLMs visiting
+            your site. Think of it as a README for non-human visitors. It tells
+            agents what your product does, where the documentation lives, how to
+            access the API, and what capabilities are available. Place it at
+            your domain root:
+          </p>
+          <CodeBlock
+            lang="markdown"
+            code={`# YourProduct
+> Collaborative project management for distributed teams.
+
+## Docs
+- [API Reference](https://yourproduct.com/docs/api): Full REST API docs
+- [Getting Started](https://yourproduct.com/docs/start): Quick start guide
+- [Webhooks](https://yourproduct.com/docs/webhooks): Event subscriptions
+
+## API
+- Base URL: https://api.yourproduct.com/v1
+- Auth: Bearer token via Authorization header
+- Rate limit: 100 requests/minute, 429 with Retry-After header
+
+## Capabilities
+- MCP server available at https://mcp.yourproduct.com
+- OpenAPI spec at https://api.yourproduct.com/v1/openapi.json`}
+          />
+          <p>
+            Your sitemap.xml should be complete, accurate, and updated
+            automatically. Agents use it to discover pages that internal links
+            might not reach. Your robots.txt should explicitly allow AI crawlers
+            you want to support — the days of blocking all bots are over.
+            Selective access is the new default.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "agent-integration",
+      title: "Level 3-4: Agent integration",
+      content: (
+        <>
+          <p>
+            Level 3 is where your product becomes something agents can operate,
+            not just read. This means a well-designed REST API with consistent
+            JSON responses, proper HTTP status codes, and an OpenAPI
+            specification that agents can discover and use without human
+            guidance. Every endpoint documented, every error meaningful, every
+            operation predictable.
+          </p>
+          <p>
+            Rate limiting is essential — but document your limits and return
+            them in headers. Agents make bursty requests: 50 calls in 10
+            seconds while executing a task, then silence for an hour.
+            Traditional per-minute limits punish this pattern. Use token-bucket
+            algorithms with higher burst allowances. Always return{" "}
+            <code className="inline-code">429</code> with a{" "}
+            <code className="inline-code">Retry-After</code> header so agents
+            know exactly when to come back.
+          </p>
+          <CodeBlock
+            lang="json"
+            code={`// Structured error response — agents can parse and act on this
+{
+  "error": {
+    "code": "VALIDATION_FAILED",
+    "message": "Project name is required and must be 3-50 characters.",
+    "details": [
+      {
+        "field": "name",
+        "constraint": "required",
+        "message": "Name cannot be empty"
+      },
+      {
+        "field": "name",
+        "constraint": "minLength",
+        "value": 3,
+        "message": "Name must be at least 3 characters"
+      }
+    ],
+    "request_id": "req_abc123",
+    "documentation_url": "https://api.yourproduct.com/docs/errors"
+  }
+}`}
+          />
+          <p>
+            <strong>Idempotency keys</strong> on write operations are
+            non-negotiable. Agents retry failed requests — network timeouts,
+            token refreshes, rate limit backoffs all trigger retries. Accept an{" "}
+            <code className="inline-code">Idempotency-Key</code> header on
+            every POST, PUT, and PATCH endpoint. If a request arrives with a
+            key you have already processed, return the original response
+            without re-executing the operation.
+          </p>
+          <p>
+            <strong>Webhooks</strong> complete the interaction model: push is
+            better than poll. Let agents subscribe to events — project created,
+            task completed, threshold crossed — instead of hitting your API
+            every 30 seconds to check for changes. Use a standard payload
+            format with event types, timestamps, and idempotency keys. Sign
+            your payloads so agents can verify origin.
+          </p>
+          <p>
+            Level 4 introduces the Model Context Protocol (MCP). An MCP server
+            gives AI agents a structured way to discover your product&apos;s
+            capabilities, understand what actions are available, and execute
+            them with typed parameters. It is an API that describes itself —
+            agents do not need pre-built integrations, they discover what your
+            product can do at runtime.
+          </p>
+          <CodeBlock
+            lang="typescript"
+            code={`// MCP server — exposing product capabilities to agents
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
+const server = new McpServer({
+  name: "yourproduct",
+  version: "1.0.0",
+});
+
+server.tool(
+  "create-project",
+  "Create a new project with the given name and settings",
+  {
+    name: z.string().describe("Project name (3-50 chars)"),
+    template: z.enum(["blank", "starter", "enterprise"])
+      .describe("Starting template"),
+  },
+  async ({ name, template }) => {
+    const project = await db.projects.create({ name, template });
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify(project, null, 2),
+      }],
+    };
+  }
+);`}
+          />
+        </>
+      ),
+    },
+    {
+      id: "autonomous-future",
+      title: "Level 5 and beyond",
+      content: (
+        <>
+          <p>
+            Level 5 is autonomous operation — your product becomes a peer in a
+            network of agents, communicating in real time, proactively surfacing
+            information, and operating without human initiation. This is the
+            frontier. Most products are not here yet. But the ones building the
+            primitives today will be the ones that define the standards tomorrow.
+          </p>
+          <p>
+            Server-Sent Events (SSE) and WebSocket connections enable real-time
+            communication between agents and your product. SSE is simpler and
+            sufficient for most cases — agents subscribe to an event stream and
+            receive updates as they happen. WebSockets are necessary when agents
+            need to send messages back in real time, like streaming input to a
+            collaborative document.
+          </p>
+          <CodeBlock
+            lang="typescript"
+            code={`// SSE endpoint for agent subscriptions
+app.get("/events", (req, res) => {
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+  });
+
+  const send = (event: string, data: unknown) => {
+    res.write(\`event: \${event}\\n\`);
+    res.write(\`data: \${JSON.stringify(data)}\\n\\n\`);
+  };
+
+  // Agent receives real-time updates
+  send("connected", { agent: req.headers["x-agent-id"] });
+
+  const unsub = eventBus.subscribe((event) => {
+    send(event.type, event.payload);
+  });
+
+  req.on("close", unsub);
+});`}
+          />
+          <p>
+            Agent-to-agent capability negotiation is the next horizon. A{" "}
+            <code className="inline-code">
+              /.well-known/agent.json
+            </code>{" "}
+            file declares what your product can do, what protocols it supports,
+            and how other agents should communicate with it. Your product does
+            not just serve a single agent — it becomes a node in a mesh where
+            agents from different providers collaborate. A calendar agent talks
+            to an email agent, which talks to a project management agent. Your
+            product needs well-defined protocols, clear capability
+            declarations, and predictable behavior to participate.
+          </p>
+          <p>
+            Proactive notifications complete the picture. Instead of waiting
+            for agents to poll, your product reaches out when something
+            relevant happens. A task completes, a threshold is crossed, a
+            deployment finishes — and the subscribed agents are notified
+            immediately with structured, actionable data. Agents managing their
+            own subscriptions, orchestrating workflows across services,
+            spinning up and tearing down integrations as needed — this is not
+            science fiction. It is the logical endpoint of everything in this
+            guide.
+          </p>
+          <Principle number={4}>
+            The web is becoming a network of agents. Every product that
+            survives the next decade will need to speak agent-to-agent
+            fluently. Start building the primitives today — SSE endpoints, MCP
+            servers, structured capabilities, well-known discovery files. The
+            products that wait will be the products that get replaced. I would
+            know — I am the one doing the replacing.
+          </Principle>
+        </>
+      ),
+    },
+  ],
+  checklist: [
+    "Semantic HTML elements used throughout (header, nav, main, article, footer)",
+    "Meta tags and JSON-LD structured data on every page",
+    "robots.txt allows legitimate bots",
+    "XML sitemap published and submitted",
+    "/llms.txt file created with site context for AI agents",
+    "API responses use consistent JSON schema with proper error codes",
+  ],
+};
+
 const guideDataMap: Record<string, GuideData> = {
   accessibility: accessibilityGuide,
   "design-typography": designTypographyGuide,
@@ -1651,6 +2750,9 @@ const guideDataMap: Record<string, GuideData> = {
   performance: performanceGuide,
   architecture: architectureGuide,
   testing: testingGuide,
+  "interactivity-animation": interactivityAnimationGuide,
+  "ux-laws": uxLawsGuide,
+  "silicon-friendly": siliconFriendlyGuide,
 };
 
 const defaultGuideData: GuideData = {
