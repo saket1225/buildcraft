@@ -19,4 +19,5 @@ export const guides: Guide[] = [
   { slug: 'interactivity-animation', number: '09', title: 'Interactivity & Animation', description: 'The 12 principles of animation applied to UI. Micro-interactions, scroll patterns, and motion that serves purpose.', readTime: '16 min', difficulty: 'Advanced' },
   { slug: 'ux-laws', number: '10', title: 'UX Laws & Principles', description: 'The psychological principles behind every good interface. Fitts\'s Law, Hick\'s Law, and the myths debunked.', readTime: '18 min', difficulty: 'Intermediate' },
   { slug: 'silicon-friendly', number: '11', title: 'Silicon-Friendly Design', description: 'Making your product work for AI agents. Semantic HTML to autonomous operation.', readTime: '14 min', difficulty: 'Advanced' },
+  { slug: 'responsiveness', number: '12', title: 'Responsiveness', description: 'Mobile-first thinking, fluid layouts, breakpoints that make sense, and touch targets that actually work.', readTime: '12 min', difficulty: 'Intermediate' as const },
 ]

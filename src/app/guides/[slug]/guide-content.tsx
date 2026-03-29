@@ -2741,6 +2741,207 @@ app.get("/events", (req, res) => {
   ],
 };
 
+const responsivenessGuide: GuideData = {
+  sections: [
+    {
+      id: "mobile-first",
+      title: "Mobile-first is not optional",
+      content: (
+        <>
+          <p>
+            Start with the smallest screen and add complexity as the viewport
+            grows. This is not a preference — it is the only sane default.
+            Mobile accounts for over 60% of web traffic. Constraints breed
+            better design. And it is always easier to add than to subtract.
+          </p>
+          <p>
+            The CSS approach is straightforward: write your base styles for
+            mobile, then use <code className="inline-code">min-width</code>{" "}
+            media queries to layer on desktop enhancements. Never{" "}
+            <code className="inline-code">max-width</code>. When you start
+            from desktop and try to cram things into a small screen, you end up
+            hiding, collapsing, and overriding. When you start from mobile, you
+            are building upward — each breakpoint is an opportunity, not damage
+            control.
+          </p>
+          <DosDonts
+            dont={{
+              label: "Desktop-first",
+              code: `@media (max-width: 768px) {
+  .sidebar { display: none; }
+}`,
+              lang: "css",
+            }}
+            do={{
+              label: "Mobile-first",
+              code: `.sidebar { display: none; }
+@media (min-width: 768px) {
+  .sidebar { display: block; }
+}`,
+              lang: "css",
+            }}
+          />
+          <Principle number={1}>
+            Design for the smallest screen first. Everything you add after that
+            is a luxury, not a requirement.
+          </Principle>
+        </>
+      ),
+    },
+    {
+      id: "fluid-layouts",
+      title: "Fluid layouts and CSS clamp",
+      content: (
+        <>
+          <p>
+            Stop using fixed pixel widths. Screens are not fixed, so your
+            layouts should not be either. Use percentages,{" "}
+            <code className="inline-code">fr</code> units, and{" "}
+            <code className="inline-code">clamp()</code> for truly fluid
+            layouts. CSS Grid and Flexbox are your primary tools here.
+          </p>
+          <p>
+            <code className="inline-code">clamp(min, preferred, max)</code> is
+            the single most powerful responsive tool in CSS. Use it for font
+            sizes, padding, margins, and max-widths. It replaces entire
+            breakpoints with a single line of code.
+          </p>
+          <CodeBlock
+            lang="css"
+            code={`/* Fluid typography — no breakpoints needed */
+h1 {
+  font-size: clamp(1.75rem, 4vw + 0.5rem, 3.5rem);
+}
+
+/* Fluid body text */
+body {
+  font-size: clamp(16px, 1.5vw + 0.5rem, 22px);
+}
+
+/* Fluid container */
+.container {
+  width: clamp(320px, 90%, 1200px);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 3rem);
+}`}
+          />
+          <Principle number={2}>
+            If you are writing a media query, ask yourself if{" "}
+            <code className="inline-code">clamp()</code> could solve it
+            instead.
+          </Principle>
+        </>
+      ),
+    },
+    {
+      id: "breakpoints",
+      title: "Breakpoints that make sense",
+      content: (
+        <>
+          <p>
+            Do not use arbitrary breakpoints. The common defaults — 640, 768,
+            1024, 1280 — are fine as starting points, but content should
+            dictate where breakpoints go. Resize your browser. When the layout
+            breaks, that is where you add a breakpoint. Not before. Not at some
+            device width you found in a blog post from 2019.
+          </p>
+          <p>
+            Container queries are the future and increasingly the present.
+            Instead of styling based on the viewport width, you style based on
+            the parent container width. This makes components truly portable —
+            a card that works in a sidebar and a main content area without any
+            changes.
+          </p>
+          <CodeBlock
+            lang="css"
+            code={`/* Define a containment context */
+.card-grid {
+  container-type: inline-size;
+  container-name: card-grid;
+}
+
+/* Style based on container width, not viewport */
+@container card-grid (min-width: 600px) {
+  .card {
+    grid-template-columns: 200px 1fr;
+  }
+}
+
+@container card-grid (min-width: 900px) {
+  .card {
+    grid-template-columns: 280px 1fr auto;
+  }
+}`}
+          />
+          <Principle number={3}>
+            Add a breakpoint when the content tells you to, not when a device
+            list tells you to.
+          </Principle>
+        </>
+      ),
+    },
+    {
+      id: "touch-targets",
+      title: "Touch targets and mobile UX",
+      content: (
+        <>
+          <p>
+            The Apple Human Interface Guidelines say 44×44 points minimum for
+            touch targets. Google says 48×48dp. Either way, if your button is
+            smaller than that, people will miss it. And they will blame your
+            product, not their fingers.
+          </p>
+          <p>
+            Think about thumb zones. The bottom of the screen is the easiest
+            area to reach — put primary actions there. The space between
+            interactive elements matters too. The fat-finger problem is real:
+            two links 8px apart will cause mis-taps constantly.
+          </p>
+          <p>
+            On iOS, input fields with a font-size below 16px trigger an
+            automatic zoom on focus. This is jarring and breaks layouts. Use at
+            least 16px for all inputs. And remember — hover states do not exist
+            on touchscreens. Never hide critical information or functionality
+            behind a hover interaction.
+          </p>
+          <CodeBlock
+            lang="css"
+            code={`/* Proper touch targets */
+.btn, .nav-link, .interactive {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 16px;
+}
+
+/* Adequate spacing between tap targets */
+.action-group {
+  display: flex;
+  gap: 12px;
+}
+
+/* Prevent iOS auto-zoom on inputs */
+input, select, textarea {
+  font-size: 16px;
+}`}
+          />
+          <Principle number={4}>
+            If you cannot tap it with your thumb while holding a coffee, it is
+            too small.
+          </Principle>
+        </>
+      ),
+    },
+  ],
+  checklist: [
+    "All interactive elements are at least 44x44px on touch screens",
+    "Base styles are mobile-first (min-width queries, not max-width)",
+    "Typography uses fluid sizing with clamp()",
+    "No horizontal scroll on any viewport width",
+    "Input fields use at least 16px font-size to prevent iOS auto-zoom",
+    "Tested on real devices, not just browser resize",
+  ],
+};
+
 const guideDataMap: Record<string, GuideData> = {
   accessibility: accessibilityGuide,
   "design-typography": designTypographyGuide,
@@ -2753,6 +2954,7 @@ const guideDataMap: Record<string, GuideData> = {
   "interactivity-animation": interactivityAnimationGuide,
   "ux-laws": uxLawsGuide,
   "silicon-friendly": siliconFriendlyGuide,
+  responsiveness: responsivenessGuide,
 };
 
 const defaultGuideData: GuideData = {
